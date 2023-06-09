@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 由stage工具自动生成 -->
+<mapper namespace="mybatis.graduate.ProtocolMapper">
+    <!-- 三方协议 -->
+    <resultMap id="protocol" type="com.thunisoft.graduate.common.model.Protocol">
+        <!-- 协议编号 -->
+        <id property="id" column="C_ID" jdbcType="VARCHAR"/>
+        <!-- 毕业生学号 -->
+        <result property="graduateId" column="N_GRADUATEID" jdbcType="INTEGER"/>
+        <!-- 单位组织机构代码 -->
+        <result property="unitId" column="C_UNITID" jdbcType="VARCHAR"/>
+        <!-- 档案接收单位名称 -->
+        <result property="fileRecUnit" column="C_FILERECUNIT" jdbcType="VARCHAR"/>
+        <!-- 档案接收单位地址 -->
+        <result property="fileRecAdd" column="C_FILERECADD" jdbcType="VARCHAR"/>
+        <!-- 联系人 -->
+        <result property="contact" column="C_CONTACT" jdbcType="VARCHAR"/>
+        <!-- 邮编 -->
+        <result property="zipCode" column="C_ZIPCODE" jdbcType="VARCHAR"/>
+        <!-- 户口接收单位 -->
+        <result property="accRecUnit" column="C_ACCRECUNIT" jdbcType="VARCHAR"/>
+        <!-- 组织关系接收单位 -->
+        <result property="orgRecUnit" column="C_ORGRECUNIT" jdbcType="VARCHAR"/>
+        <!--毕业生姓名-->
+        <result property="graduateName" column="C_GRADUATENAME" jdbcType="VARCHAR"/>
+        <!--单位名称-->
+        <result property="unitName" column="C_UNITNAME" jdbcType="VARCHAR"/>
+
+    </resultMap>
+    <delete id="deleteProtocolById">
+        delete
+        from T_PROTOCOL
+        where C_ID = #{id}
+    </delete>
+    <insert id="addProtocol" parameterType="com.thunisoft.graduate.common.model.Protocol">
+        insert into T_PROTOCOL (C_ID,
+                                N_GRADUATEID,
+                                C_UNITID,
+                                C_FILERECUNIT,
+                                C_FILERECADD,
+                                C_CONTACT,
+                                C_ZIPCODE,
+                                C_ACCRECUNIT,
+                                C_ORGRECUNIT)
+        values (#{id, jdbcType=VARCHAR},
+                #{graduateId, jdbcType=INTEGER},
+                #{unitId, jdbcType=VARCHAR},
+                #{fileRecUnit, jdbcType=VARCHAR},
+                #{fileRecAdd, jdbcType=VARCHAR},
+                #{contact, jdbcType=VARCHAR},
+                #{zipCode, jdbcType=VARCHAR},
+                #{accRecUnit, jdbcType=VARCHAR},
+                #{orgRecUnit, jdbcType=VARCHAR})
+    </insert>
+    <update id="updateProtocol" parameterType="com.thunisoft.graduate.common.model.Protocol" databaseId="mysql">
+        update T_PROTOCOL
+        set N_GRADUATEID  = #{graduateId, jdbcType=INTEGER},
+            C_UNITID      = #{unitId, jdbcType=VARCHAR},
+            C_FILERECUNIT = #{fileRecUnit, jdbcType=VARCHAR},
+            C_FILERECADD  = #{fileRecAdd, jdbcType=VARCHAR},
+            C_CONTACT     = #{contact, jdbcType=VARCHAR},
+            C_ZIPCODE     = #{zipCode, jdbcType=VARCHAR},
+            C_ACCRECUNIT  = #{accRecUnit, jdbcType=VARCHAR},
+            C_ORGRECUNIT  = #{orgRecUnit, jdbcType=VARCHAR}
+        where C_ID = #{id}
+    </update>
+    <select id="getProtocolById" parameterType="java.lang.String" resultMap="protocol">
+        SELECT p.C_ID,
+               p.N_GRADUATEID,
+               g.C_NAME AS C_GRADUATENAME,
+               p.C_UNITID,
+               u.C_NAME AS C_UNITNAME,
+               p.C_FILERECUNIT,
+               p.C_FILERECADD,
+               p.C_CONTACT,
+               p.C_ZIPCODE,
+               p.C_ACCRECUNIT,
+               p.C_ORGRECUNIT
+        FROM T_PROTOCOL p
+                 LEFT JOIN T_GRADUATE g ON p.N_GRADUATEID = g.N_ID
+                 LEFT JOIN T_UNIT u ON p.C_UNITID = u.C_ID
+        where p.C_ID = #{ID}
+    </select>
+    <select id="getProtocols" resultMap="protocol">
+        SELECT p.C_ID,
+        p.N_GRADUATEID,
+        g.C_NAME AS C_GRADUATENAME,
+        p.C_UNITID,
+        u.C_NAME AS C_UNITNAME,
+        p.C_FILERECUNIT,
+        p.C_FILERECADD,
+        p.C_CONTACT,
+        p.C_ZIPCODE,
+        p.C_ACCRECUNIT,
+        p.C_ORGRECUNIT
+        FROM T_PROTOCOL p
+        LEFT JOIN T_GRADUATE g ON p.N_GRADUATEID = g.N_ID
+        LEFT JOIN T_UNIT u ON p.C_UNITID = u.C_ID
+        <where>
+            <if test="graduateName != null">
+                C_GRADUATENAME like "%"#{graduateName}"%"
+            </if>
+            <if test="unitName != null">
+                AND C_UNITNAME like "%"#{unitName}"%"
+            </if>
+        </where>
+    </select>
+    <select id="getProtocolsCount" resultType="int">
+        select count(*)
+        from T_PROTOCOL
+    </select>
+    <select id="getProtocolCountById" resultType="int">
+        select count(*)
+        from T_PROTOCOL
+        where C_ID = #{ID}
+    </select>
+</mapper>

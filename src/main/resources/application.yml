@@ -1,0 +1,67 @@
+#根据不同环境选用不同的配置
+server:
+  port: 8088
+spring:
+  #数据源
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #公司147
+    #    url: jdbc:mysql://172.18.48.147:3306/city_graduate?serverTimezone=GMT%2B8&amp&useSSL=false&autoReconnect=true&failOverReadOnly=false
+    #家里
+    url: jdbc:mysql://localhost:3306/city_graduate?serverTimezone=GMT%2B8&amp&useSSL=false&autoReconnect=true&failOverReadOnly=false
+    username: root
+    password: mirror6
+    # 使用c3p0数据源
+    type: com.mchange.v2.c3p0.ComboPooledDataSource
+    filters: stat
+    maxActive: 20
+    initialSize: 20
+    maxWait: 60000
+    minIdle: 20
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+  #thymeleaf模版前缀
+  thymeleaf:
+    prefix: classpath:/public/
+    mode: html5
+    encoding: utf-8
+    servlet:
+      content-type: text/html
+
+  #views
+  mvc:
+    view:
+      prefix: classpath:/public/
+      suffix: .html
+#    static-path-pattern: /static/**
+
+#mybatis扫描设置
+mybatis:
+  mapper-locations: classpath*:mybatis/graduate/*.xml
+  type-aliases-package: com.thunisoft.graduate.common.model
+  #config-location: classpath:mybatis/mybatis-config.xml
+
+#pagehelper分页插件配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+# 打印sql
+logging:
+  level:
+    mybatis.graduate: debug
+
+
+
+
+
+
+
